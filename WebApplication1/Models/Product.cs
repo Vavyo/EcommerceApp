@@ -11,5 +11,8 @@ namespace WebApplication1.Models
         public string Name { get; set; }
         public string Description { get; set; }
 
+        // reverse nav
+        public List<ProductCategory> ProductCategories { get; set; }
+
     }
 }
