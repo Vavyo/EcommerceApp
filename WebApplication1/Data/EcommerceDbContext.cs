@@ -18,5 +18,17 @@ namespace WebApplication1.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            // base is used due to IDentityDbContext
+            base.OnModelCreating(builder);
+
+
+            builder.Entity<ProductCategory>().HasKey(productCategory => new
+            {
+                productCategory.ProductId,
+                productCategory.CategoryId,
+            });
+        }
     }
 }
