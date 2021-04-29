@@ -12,7 +12,7 @@ namespace WebApplication1.Controllers
         // GET: AdminController
         public ActionResult Index()
         {
-            return View();
+            return View("Categories");
         }
 
         // GET: AdminController/Details/5
