@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Data;
+using WebApplication1.Data.Interfaces;
 using WebApplication1.Models.Identity;
 
 namespace WebApplication1
@@ -33,6 +34,8 @@ namespace WebApplication1
                 if (cs == null) throw new InvalidOperationException("Default Connection is missing");
                 options.UseSqlServer(cs);
             });
+            services.AddTransient<ICategoryRepository, DbCategoryRepository>();
+            services.AddTransient<IProductRepository, DbProductRepository>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<EcommerceDbContext>()
