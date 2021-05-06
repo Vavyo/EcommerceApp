@@ -11,6 +11,6 @@ namespace WebApplication1.Data.Interfaces
     {
         Task CreateProduct(ProductDto product);
         Task<ProductDto> GetProduct(int productId);
-        Task<List<ProductDto>> GetAllProducts();
+        List<ProductDto> GetAllProducts();
     }
 }

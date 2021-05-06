@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication1.Models.Category>
+﻿@model IEnumerable<WebApplication1.Models.Api.CategoryDto>
 
 @{
     ViewData["Title"] = "Categories";
@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.First().Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.First().Name)
             </th>
             <th></th>
         </tr>

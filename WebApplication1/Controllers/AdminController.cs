@@ -4,15 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Data.Interfaces;
 
 namespace WebApplication1.Controllers
 {
     public class AdminController : Controller
     {
-        // GET: AdminController
-        public ActionResult Index()
+        private readonly ICategoryRepository categoryRepository;
+
+        public AdminController(ICategoryRepository categoryRepository)
         {
-            return View("Categories");
+            this.categoryRepository = categoryRepository;
+        }
+        // GET: AdminController
+        public async Task<ActionResult> Index()
+        {
+            return View("Categories", await categoryRepository.GetCategories());
         }
 
         // GET: AdminController/Details/5
@@ -24,7 +31,7 @@ namespace WebApplication1.Controllers
         // GET: AdminController/Create
         public ActionResult Create()
         {
-            return View();
+            return View("CreateCategory");
         }
 
         // POST: AdminController/Create

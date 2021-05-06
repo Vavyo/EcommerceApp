@@ -21,9 +21,9 @@ namespace WebApplication1.Data
             throw new NotImplementedException();
         }
 
-        public async Task<List<ProductDto>> GetAllProducts()
+        public List<ProductDto> GetAllProducts()
         {
-            return await context.Products
+            return context.Products
                 .Select(product => new ProductDto
                 {
                     Id = product.Id,
@@ -34,7 +34,7 @@ namespace WebApplication1.Data
                         Id = category.Category.Id,
                         Name = category.Category.Name,
                     }).ToList()
-                }).ToListAsync();
+                }).ToList();
         }
 
         public Task<ProductDto> GetProduct(int productId)
