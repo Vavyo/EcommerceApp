@@ -10,7 +10,7 @@ namespace WebApplication1.Data
 {
     public class DbProductRepository : IProductRepository
     {
-        private EcommerceDbContext context;
+        private readonly EcommerceDbContext context;
 
         public DbProductRepository(EcommerceDbContext context)
         {
