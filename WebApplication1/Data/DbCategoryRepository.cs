@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,9 +21,14 @@ namespace WebApplication1.Data
             throw new NotImplementedException();
         }
 
-        public Task<List<CategoryDto>> GetCategories()
+        public async Task<List<CategoryDto>> GetCategories()
         {
-            throw new NotImplementedException();
+            return await context.Categories
+                .Select(cat => new CategoryDto 
+                {
+                    Id = cat.Id,
+                    Name = cat.Name, 
+                }).ToListAsync();
         }
     }
 }
