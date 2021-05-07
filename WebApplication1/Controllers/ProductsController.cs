@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using WebApplication1.Models.Api;
 
 namespace WebApplication1.Controllers
 {
@@ -33,7 +34,13 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            var product = await _context.Products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Categories = p.ProductCategories.Select(pc => pc.Category).ToList()
+            })
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
