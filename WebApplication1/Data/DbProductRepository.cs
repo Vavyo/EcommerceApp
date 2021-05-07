@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Data.Interfaces;
+using WebApplication1.Models;
 using WebApplication1.Models.Api;
 
 namespace WebApplication1.Data
@@ -29,7 +30,7 @@ namespace WebApplication1.Data
                     Id = product.Id,
                     Name = product.Name,
                     Description = product.Description,
-                    Categories = product.ProductCategories.Select(category => new CategoryDto
+                    Categories = product.ProductCategories.Select(category => new Category
                     {
                         Id = category.Category.Id,
                         Name = category.Category.Name,

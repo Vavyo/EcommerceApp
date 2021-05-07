@@ -6,27 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
-using WebApplication1.Data.Interfaces;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class CategoriesController : Controller
+    public class ProductsController : Controller
     {
-        private readonly ICategoryRepository categoryRepository;
+        private readonly EcommerceDbContext _context;
 
-        public CategoriesController(ICategoryRepository categoryRepository)
+        public ProductsController(EcommerceDbContext context)
         {
-            this.categoryRepository = categoryRepository;
+            _context = context;
         }
 
-        // GET: Categories
+        // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await categoryRepository.GetCategories());
+            return View(await _context.Products.ToListAsync());
         }
 
-        // GET: Categories/Details/5
+        // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,37 +33,39 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            var category = await categoryRepository.GetCategoryDto(id);
-            if (category == null)
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(product);
         }
 
-        // GET: Categories/Create
+        // GET: Products/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Categories/Create
+        // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Product product)
         {
             if (ModelState.IsValid)
             {
-                await categoryRepository.CreateCategory(category);
+                _context.Add(product);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(product);
         }
 
-        // GET: Categories/Edit/5
+        // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,36 +73,50 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            var category = await categoryRepository.GetCategory(id);
-            if (category == null)
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(category);
+            return View(product);
         }
 
-        // POST: Categories/Edit/5
+        // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Product product)
         {
-            if (id != category.Id)
+            if (id != product.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                if (!await categoryRepository.UpdateCategory(category))
-                    return NotFound();
+                try
+                {
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProductExists(product.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(product);
         }
 
-        // GET: Categories/Delete/5
+        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -109,23 +124,30 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            var categories = await categoryRepository.GetCategories();
-            var category = categories.FirstOrDefault(m => m.Id == id); // not sure why
-            if (category == null)
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(product);
         }
 
-        // POST: Categories/Delete/5
+        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await categoryRepository.DeleteCategory(id);
+            var product = await _context.Products.FindAsync(id);
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProductExists(int id)
+        {
+            return _context.Products.Any(e => e.Id == id);
         }
     }
 }

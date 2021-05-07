@@ -11,7 +11,9 @@ namespace WebApplication1.Data.Interfaces
     {
         Task CreateCategory(Category category);
         Task<List<Category>> GetCategories();
+        Task<List<CategoryDto>> GetCategoryDtos();
         Task<Category> GetCategory(int? id);
+        Task<CategoryDto> GetCategoryDto(int? id);
         Task DeleteCategory(int id);
         Task<bool> UpdateCategory(Category category);
     }

@@ -35,9 +35,39 @@ namespace WebApplication1.Data
             return await context.Categories.ToListAsync();
         }
 
+        public async Task<List<CategoryDto>> GetCategoryDtos()
+        {
+            return await context.Categories.Select(c => new CategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Products = c.ProductCategories.Select(pc => new Product
+                {
+                    Id = pc.Product.Id,
+                    Name = pc.Product.Name,
+                    Description = pc.Product.Description,
+                }).ToList()
+            }).ToListAsync();
+        }
+
         public async Task<Category> GetCategory(int? id)
         {
-            return await context.Categories.FindAsync(id);
+            return await context.Categories
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+        public async Task<CategoryDto> GetCategoryDto(int? id)
+        {
+            return await context.Categories.Select(c => new CategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Products = c.ProductCategories.Select(pc => new Product
+                {
+                    Id = pc.Product.Id,
+                    Name = pc.Product.Name,
+                    Description = pc.Product.Description,
+                }).ToList()
+            }).FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<bool> UpdateCategory(Category category)
