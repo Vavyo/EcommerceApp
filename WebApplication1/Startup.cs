@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,6 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Data;
+using WebApplication1.Data.Interfaces;
+using WebApplication1.Models.Identity;
 
 namespace WebApplication1
 {
@@ -23,6 +28,19 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<EcommerceDbContext>(options =>
+            {
+                var cs = Configuration.GetConnectionString("DefaultConnection");
+                if (cs == null) throw new InvalidOperationException("Default Connection is missing");
+                options.UseSqlServer(cs);
+            });
+            services.AddTransient<ICategoryRepository, DbCategoryRepository>();
+            services.AddTransient<IProductRepository, DbProductRepository>();
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<EcommerceDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddControllersWithViews();
         }
 
